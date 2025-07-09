@@ -1,0 +1,137 @@
+<!-- wwwroot/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASP.NET Core Chat App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh; /* Adjust height for better chat experience */
+        }
+        .chat-header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+        .messages-box {
+            flex-grow: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* Show latest messages at the bottom */
+        }
+        .message-item {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+        }
+        .message-item.self {
+            justify-content: flex-end;
+        }
+        .message-bubble {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        .message-item.other .message-bubble {
+            background-color: #e2e8f0;
+            color: #333;
+            border-bottom-left-radius: 0.25rem;
+        }
+        .message-item.self .message-bubble {
+            background-color: #4a90e2;
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+        .message-info {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .message-item.self .message-info {
+            text-align: right;
+            color: #e0e7ff; /* Lighter color for self messages info */
+        }
+        .chat-input-area {
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .chat-input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            outline: none;
+        }
+        .chat-input-area button {
+            background-color: #4a90e2;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .chat-input-area button:hover {
+            background-color: #357bd8;
+        }
+        .system-message {
+            text-align: center;
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="chat-container">
+        <div class="chat-header">
+            ASP.NET Core Chat
+        </div>
+
+        <div class="p-6 bg-white rounded-lg shadow-md mb-4 mx-auto w-11/12 md:w-3/4 lg:w-2/3">
+            <div class="mb-4">
+                <label for="userInput" class="block text-gray-700 text-sm font-bold mb-2">Your Name:</label>
+                <input type="text" id="userInput" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline rounded-lg" placeholder="Enter your name" />
+            </div>
+            <div class="mb-4">
+                <label for="messageInput" class="block text-gray-700 text-sm font-bold mb-2">Message:</label>
+                <input type="text" id="messageInput" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline rounded-lg" placeholder="Type your message" />
+            </div>
+            <button id="sendButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full rounded-lg">Send Message</button>
+        </div>
+
+        <div class="messages-box" id="messagesList">
+            <!-- Messages will be appended here -->
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>
