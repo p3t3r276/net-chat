@@ -23,18 +23,15 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSignalR()
     // Configure SignalR to use Redis as a backplane.
-    // This allows multiple instances of your chat app to share messages in real-time.
     .AddStackExchangeRedis(builder.Configuration["Redis:ConnectionString"]!, options => {
         options.Configuration.AbortOnConnectFail = false; // Don't abort if Redis isn't immediately available
-        options.Configuration.SyncTimeout = 5000; // Increase timeout for Redis operations
+        options.Configuration.SyncTimeout = 5000;
         options.Configuration.AsyncTimeout = 5000;
         options.Configuration.ConnectTimeout = 5000;
     });
 
 builder.Services.AddControllers();
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 
