@@ -1,0 +1,15 @@
+services:
+  realtime-chat-redis:
+    image: redis:7.4.0-alpine
+    environment:
+      - REDIS_PASSWORD=eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    command: ['redis-server']
