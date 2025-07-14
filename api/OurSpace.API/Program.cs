@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using OurSpace.API.Data;
 using OurSpace.API.Hubs;
+using OurSpace.API.BackgroundServices;
 using OurSpace.API.Services;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add MessageService to the dependency injection container
 builder.Services.AddScoped<MessageService>();
 
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var connectionString = builder.Configuration["Redis:ConnectionString"];
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        throw new InvalidOperationException("Redis:ConnectionString is not configured.");
+    }
+    return ConnectionMultiplexer.Connect(connectionString);
+});
+
+builder.Services.AddScoped<RedisStreamProducerService>();
 
 builder.Services.AddCors(options =>
 {
@@ -23,18 +36,15 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSignalR()
     // Configure SignalR to use Redis as a backplane.
-    // This allows multiple instances of your chat app to share messages in real-time.
     .AddStackExchangeRedis(builder.Configuration["Redis:ConnectionString"]!, options => {
         options.Configuration.AbortOnConnectFail = false; // Don't abort if Redis isn't immediately available
-        options.Configuration.SyncTimeout = 5000; // Increase timeout for Redis operations
+        options.Configuration.SyncTimeout = 5000;
         options.Configuration.AsyncTimeout = 5000;
         options.Configuration.ConnectTimeout = 5000;
     });
 
 builder.Services.AddControllers();
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 
