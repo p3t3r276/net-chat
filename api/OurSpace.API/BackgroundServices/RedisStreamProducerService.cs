@@ -2,7 +2,7 @@ using System.Text.Json;
 using OurSpace.API.Models;
 using StackExchange.Redis;
 
-namespace OurSpace.API.Services;
+namespace OurSpace.API.BackgroundServices;
 
 public class RedisStreamProducerService(
     IConnectionMultiplexer redis,

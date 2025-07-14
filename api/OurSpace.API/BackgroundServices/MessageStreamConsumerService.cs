@@ -1,8 +1,9 @@
 using System.Text.Json;
 using OurSpace.API.Models;
+using OurSpace.API.Services;
 using StackExchange.Redis;
 
-namespace OurSpace.API.Services;
+namespace OurSpace.API.BackgroundServices;
 
 public class MessageStreamConsumerService : BackgroundService
 {

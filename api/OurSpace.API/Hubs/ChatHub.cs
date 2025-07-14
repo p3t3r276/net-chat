@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using OurSpace.API.BackgroundServices;
 using OurSpace.API.Models;
 using OurSpace.API.Services;
 
