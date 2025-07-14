@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OurSpace.API.Data;
 using OurSpace.API.Hubs;
+using OurSpace.API.BackgroundServices;
 using OurSpace.API.Services;
 using StackExchange.Redis;
 
