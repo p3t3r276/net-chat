@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.SignalR;
+using OurSpace.API.BackgroundServices;
 using OurSpace.API.Models;
 using OurSpace.API.Services;
 
 namespace OurSpace.API.Hubs;
 
-public class ChatHub(MessageService messageService, ILogger<ChatHub> logger)
-    : Hub
+public class ChatHub(RedisStreamProducerService redisStreamProducerService,
+            MessageService messageService,
+            ILogger<ChatHub> logger) : Hub
 {
     /// <summary>
     /// Handles incoming chat messages from clients.
@@ -30,18 +32,19 @@ public class ChatHub(MessageService messageService, ILogger<ChatHub> logger)
         {
             UserName = user,
             Content = messageContent,
-            Timestamp = DateTime.UtcNow // Ensure server-side timestamp for consistency
+            Timestamp = DateTime.UtcNow
         };
 
         try
         {
-            // Save message to SQLite
-            await messageService.AddMessageAsync(message);
+             // 1. Publish to Redis Stream (Outbox Pattern)
+                // This is a fast, non-blocking operation.
+                await redisStreamProducerService.PublishMessageToStreamAsync(message);
 
-            // Broadcast message to all connected clients
-            // The Redis backplane ensures this message is sent to clients connected to any server instance
-            await Clients.All.SendAsync("ReceiveMessage", message.UserName, message.Content, message.Timestamp.ToString("yyyy-MM-dd HH:mm:ss"));
-            logger.LogInformation("Message broadcasted: {User} - {Content}", message.UserName, message.Content);
+                // 2. Immediately broadcast message to all connected clients (real-time)
+                // This ensures instant feedback to users.
+                await Clients.All.SendAsync("ReceiveMessage", message.UserName, message.Content, message.Timestamp.ToString("yyyy-MM-dd HH:mm:ss"));
+                logger.LogInformation("Message broadcasted and enqueued for persistence: {User} - {Content}", message.UserName, message.Content);
         }
         catch (Exception ex)
         {
