@@ -13,8 +13,7 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Configure the Message entity if needed (e.g., indexes, constraints)
         modelBuilder.Entity<Message>()
-            .HasIndex(m => m.Timestamp); // Indexing for faster history retrieval
+            .HasIndex(m => m.Timestamp);
     }
 }
